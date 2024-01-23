@@ -4,6 +4,7 @@ import com.example.gestionpedidoscondao.domain.itemPedido.ItemPedido;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,4 +39,7 @@ public class Producto {
 
     @OneToMany(mappedBy = "producto")
     private Set<ItemPedido> itemsPedidos = new HashSet<>();
+
+    public Producto(long l, String snacksDePapas, BigDecimal bigDecimal, int i) {
+    }
 }

@@ -28,7 +28,7 @@ public class ItemPedido {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "codPedido", referencedColumnName = "código")
+    @JoinColumn(name = "codPedido", referencedColumnName = "codigo")
     private Pedido pedido;
 
     private int cantidad;

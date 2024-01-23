@@ -23,6 +23,19 @@ public class ProductoDAO implements DAO<Producto> {
         return productos;
     }
 
+    public void saveAll(List<Producto> productos) {
+        EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            em.getTransaction().begin();
+            for (Producto producto : productos) {
+                em.persist(producto);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
     @Override
     public Producto get(Long id) {
         EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();

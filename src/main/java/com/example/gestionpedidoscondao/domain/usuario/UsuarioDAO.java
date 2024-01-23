@@ -17,6 +17,19 @@ public class UsuarioDAO implements DAO<Usuario> {
         return null; // Modifica esto según la implementación deseada
     }
 
+    public void saveAll(List<Usuario> usuarios) {
+        EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            em.getTransaction().begin();
+            for (Usuario usuario : usuarios) {
+                em.persist(usuario);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
     @Override
     public Usuario get(Long id) {
         EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
@@ -68,12 +81,13 @@ public class UsuarioDAO implements DAO<Usuario> {
         EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
         Usuario result = null;
         try {
-            TypedQuery<Usuario> q = em.createQuery("from Usuario where nombre=:u and contraseña=:p", Usuario.class);
+            TypedQuery<Usuario> q = em.createQuery("SELECT u FROM Usuario u WHERE u.nombre = :u AND u.contraseña = :p", Usuario.class);
             q.setParameter("u", username);
             q.setParameter("p", password);
             result = q.getSingleResult();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error al validar el usuario: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             em.close();
         }

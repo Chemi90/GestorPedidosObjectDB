@@ -1,5 +1,7 @@
 package com.example.gestionpedidoscondao;
 
+import com.example.gestionpedidoscondao.domain.producto.ProductoDAO;
+import com.example.gestionpedidoscondao.domain.usuario.UsuarioDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -30,6 +32,18 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+
+        try {
+            // Si no hay nada en la base de datos, introduzco datos de prueba
+            ProductoDAO productoDAO = new ProductoDAO();
+            productoDAO.saveAll(Data.getProductos());
+
+            UsuarioDAO usuariodao = new UsuarioDAO();
+            usuariodao.saveAll(Data.getUsuarios());
+
+        } catch (Exception e) {
+            // Do nothing
+        }
         App.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("controllers/ventanaLogin.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 907, 497);

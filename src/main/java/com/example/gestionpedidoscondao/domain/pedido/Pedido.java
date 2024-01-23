@@ -1,14 +1,15 @@
 package com.example.gestionpedidoscondao.domain.pedido;
 
-
 import com.example.gestionpedidoscondao.domain.itemPedido.ItemPedido;
 import com.example.gestionpedidoscondao.domain.usuario.Usuario;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Clase Pedido.
@@ -20,13 +21,11 @@ import java.util.HashSet;
  * @version 1.0
  * @since 2023-11-21
  */
-@Data
 @Entity
 @Table(name = "Pedidos")
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
-@Getter
-@Setter
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +37,7 @@ public class Pedido {
     private Date fecha;
 
     @ManyToOne
-    @JoinColumn(name = "usuario", referencedColumnName = "id_usuarios")
+    @JoinColumn(name = "usuario", referencedColumnName = "id")
     private Usuario usuario;
 
     private double total;

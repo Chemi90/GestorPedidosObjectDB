@@ -93,7 +93,7 @@ public class VentanaPrincipal extends Application implements Initializable {
         ObservableList<Carrito> itemsCarrito = tbCarrito.getItems();
 
         if (itemsCarrito.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            var alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Carrito Vacío");
             alert.setHeaderText("No se puede realizar la compra");
             alert.setContentText("No hay artículos en el carrito. Por favor, añade algunos productos antes de comprar.");
@@ -101,26 +101,26 @@ public class VentanaPrincipal extends Application implements Initializable {
             return;
         }
 
-        double totalCompra = calcularTotalCompra(itemsCarrito);
-        String codigoPedido = generateUniqueCode();
-        Date fechaPedido = new Date(System.currentTimeMillis());
-        Usuario usuario = Session.getUser();
+        var totalCompra = calcularTotalCompra(itemsCarrito);
+        var codigoPedido = generateUniqueCode();
+        var fechaPedido = new Date(System.currentTimeMillis());
+        var usuario = Session.getUser();
 
-        Pedido pedido = new Pedido();
+        var pedido = new Pedido();
         pedido.setCodigo(codigoPedido);
         pedido.setFecha(fechaPedido);
         pedido.setUsuario(usuario);
         pedido.setTotal(totalCompra);
-
-        try (EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager()) {
-            EntityTransaction tx = em.getTransaction();
+        EntityManager em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        try  {
+            var tx = em.getTransaction();
             tx.begin();
 
             em.persist(pedido);
 
-            for (Carrito item : itemsCarrito) {
-                Producto producto = productoDAO.findByName(item.getNombre()); // Método para buscar Producto por nombre
-                ItemPedido itemPedido = new ItemPedido();
+            for (var item : itemsCarrito) {
+                var producto = productoDAO.findByName(item.getNombre()); // Método para buscar Producto por nombre
+                var itemPedido = new ItemPedido();
                 itemPedido.setPedido(pedido);
                 itemPedido.setProducto(producto);
                 itemPedido.setCantidad(item.getCantidad());
@@ -135,7 +135,7 @@ public class VentanaPrincipal extends Application implements Initializable {
 
             actualizarTablaPedidos();
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            var alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Compra Exitosa");
             alert.setHeaderText(null);
             alert.setContentText("Tu pedido ha sido registrado exitosamente.");
@@ -143,6 +143,7 @@ public class VentanaPrincipal extends Application implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -151,7 +152,7 @@ public class VentanaPrincipal extends Application implements Initializable {
      */
     private void actualizarTablaPedidos() {
 
-        List<Pedido> pedidosActualizados = pedidoDAO.findByUsuarioId(Math.toIntExact(Session.getUser().getId()));
+        var pedidosActualizados = pedidoDAO.findByUsuarioId(Math.toIntExact(Session.getUser().getId()));
         tbPedidos.setItems(FXCollections.observableArrayList(pedidosActualizados));
     }
 
@@ -163,7 +164,7 @@ public class VentanaPrincipal extends Application implements Initializable {
      */
     private double calcularTotalCompra(ObservableList<Carrito> itemsCarrito) {
         double total = 0;
-        for (Carrito item : itemsCarrito) {
+        for (var item : itemsCarrito) {
             total += item.getPrecioTotal();
         }
         return total;
@@ -188,11 +189,11 @@ public class VentanaPrincipal extends Application implements Initializable {
      */
     @javafx.fxml.FXML
     public void onAñadirClick(ActionEvent actionEvent) {
-        String productoSeleccionado = cbItem.getValue() != null ? cbItem.getValue().toString() : null;
-        Integer cantidadSeleccionada = cbCantidad.getValue() != null ? (int) cbCantidad.getValue() : null;
+        var productoSeleccionado = cbItem.getValue() != null ? cbItem.getValue().toString() : null;
+        var cantidadSeleccionada = cbCantidad.getValue() != null ? (int) cbCantidad.getValue() : null;
 
         if (productoSeleccionado == null || cantidadSeleccionada == null || cantidadSeleccionada <= 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            var alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error en selección");
             alert.setHeaderText(null);
             alert.setContentText("Por favor, selecciona un producto y una cantidad válida.");
@@ -203,7 +204,7 @@ public class VentanaPrincipal extends Application implements Initializable {
         Double precioUnitario = Double.parseDouble(lbPrecio.getText().replace("Precio: ", ""));
         Double total = cantidadSeleccionada * precioUnitario; // Calcular el total
 
-        Carrito carritoItem = new Carrito(productoSeleccionado, cantidadSeleccionada, total);
+        var carritoItem = new Carrito(productoSeleccionado, cantidadSeleccionada, total);
 
         tbCarrito.getItems().add(carritoItem);
 
@@ -222,9 +223,9 @@ public class VentanaPrincipal extends Application implements Initializable {
      * @return Un código de pedido único.
      */
     public String generateUniqueCode() {
-        long timestamp = System.currentTimeMillis();
-        int randomValue = (int) (Math.random() * 1000);
-        String uniqueCode = "PEDIDO_" + timestamp + "_" + randomValue;
+        var timestamp = System.currentTimeMillis();
+        var randomValue = (int) (Math.random() * 1000);
+        var uniqueCode = "PEDIDO_" + timestamp + "_" + randomValue;
         return uniqueCode;
     }
 
@@ -251,7 +252,7 @@ public class VentanaPrincipal extends Application implements Initializable {
      */
     @javafx.fxml.FXML
     public void onCloseClick(ActionEvent actionEvent) {
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        var stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
@@ -273,8 +274,8 @@ public class VentanaPrincipal extends Application implements Initializable {
     private void chageSceneToItemsPedidos() {
         tbPedidos.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                Pedido pedidoSeleccionado = (Pedido) newValue;
-                Pedido codigoPedido = pedidoSeleccionado;
+                var pedidoSeleccionado = (Pedido) newValue;
+                var codigoPedido = pedidoSeleccionado;
                 Session.setPedido(codigoPedido); // Guardar el código del pedido en la sesión
                 try {
                     App.changeScene("ventanaItemPedido.fxml", "Items del Pedido " + codigoPedido);
@@ -290,7 +291,7 @@ public class VentanaPrincipal extends Application implements Initializable {
      * Este método llena la tabla de pedidos con los pedidos realizados por el usuario.
      */
     private void loadPedidosUsuario() {
-        List<Pedido> pedidos = pedidoDAO.findByUsuarioId(Math.toIntExact(Session.getUser().getId()));
+        var pedidos = pedidoDAO.findByUsuarioId(Math.toIntExact(Session.getUser().getId()));
 
         cCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         cFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
@@ -300,7 +301,7 @@ public class VentanaPrincipal extends Application implements Initializable {
         if (!pedidos.isEmpty()) {
             tbPedidos.setItems(FXCollections.observableArrayList(pedidos));
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            var alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error pedidos");
             alert.setHeaderText(null);
             alert.setContentText("Tabla vacia.");
@@ -327,10 +328,10 @@ public class VentanaPrincipal extends Application implements Initializable {
      * Este método se utiliza para llenar la lista desplegable con los nombres de los productos disponibles.
      */
     private void loadNombresProductosIntoComboBox() {
-        List<Producto> productos = productoDAO.getAll();
+        var productos = productoDAO.getAll();
 
         if (productos == null || productos.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            var alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error de Carga");
             alert.setHeaderText(null);
             alert.setContentText("No se pudieron cargar los productos. Por favor, verifica la conexión con la base de datos.");
@@ -339,7 +340,7 @@ public class VentanaPrincipal extends Application implements Initializable {
         }
 
         List<String> nombreProductos = new ArrayList<>();
-        for (Producto producto : productos) {
+        for (var producto : productos) {
             nombreProductos.add(producto.getNombre());
         }
         cbItem.getItems().addAll(nombreProductos);
@@ -355,7 +356,7 @@ public class VentanaPrincipal extends Application implements Initializable {
      */
     private void listenerProductoSeleccionado(List<Producto> productos) {
         cbItem.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Producto selectedProducto = productos.stream()
+            var selectedProducto = productos.stream()
                     .filter(producto -> producto.getNombre().equals(newValue))
                     .findFirst()
                     .orElse(null);
@@ -375,7 +376,7 @@ public class VentanaPrincipal extends Application implements Initializable {
     private void updateCantidadComboBox(Producto producto) {
         cbCantidad.getItems().clear();
         if (producto != null) {
-            for (int i = 1; i <= producto.getCantidadDisponible(); i++) {
+            for (var i = 1; i <= producto.getCantidadDisponible(); i++) {
                 cbCantidad.getItems().add(i);
             }
         }

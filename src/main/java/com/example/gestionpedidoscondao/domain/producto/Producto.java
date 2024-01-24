@@ -4,6 +4,7 @@ import com.example.gestionpedidoscondao.domain.itemPedido.ItemPedido;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Producto {
+public class Producto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

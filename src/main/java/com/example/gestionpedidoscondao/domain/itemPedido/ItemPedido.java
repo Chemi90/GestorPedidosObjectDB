@@ -5,6 +5,8 @@ import com.example.gestionpedidoscondao.domain.producto.Producto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * Clase ItemPedido.
  * Representa un ítem de un pedido en la base de datos.
@@ -22,7 +24,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ItemPedido {
+public class ItemPedido implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
